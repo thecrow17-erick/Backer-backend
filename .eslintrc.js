@@ -23,6 +23,14 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/consistent-return': 'error',
     '@typescript-eslint/no-unused-vars': 'off', 
-    '@typescript-eslint/no-empty-function': 'warn'
+    '@typescript-eslint/no-empty-function': 'warn',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+        singleQuote: true,
+        arrowParens: "avoid"
+      },
+    ],
   },
 };

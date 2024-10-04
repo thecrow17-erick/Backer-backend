@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { Observable } from 'rxjs';
 import { UserService, RoleService } from 'src/users/service';
 
 @Injectable()
@@ -17,19 +16,21 @@ export class RoleGuard implements CanActivate {
     private readonly roleService: RoleService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    //saco mis datos de la request
     const req = context.switchToHttp().getRequest<Request>();
+    //saco los datos del decorador de los permisos
     const permissions = this.reflector.get<string[]>(
       'permissions',
       context.getHandler(),
     );
+    //identifico al usuario y su rol
     const findUser = await this.userService.findUserId(req.userId);
-    if (!findUser) throw new NotFoundException('usuario no encontrado');
-    for (const permission in permissions) {
-      const findPermission = await this.roleService.findRolePermission(
+    //pregunto si cada uno de los permisos lo tiene el rol que tiene el usuario
+    for (let i = 0; i < permissions.length; i++) {
+      await this.roleService.findRolePermission(
         findUser.roleId,
-        permission,
+        permissions[i],
       );
-      console.log(findPermission);
     }
     return true;
   }

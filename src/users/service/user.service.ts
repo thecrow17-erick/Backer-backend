@@ -27,7 +27,7 @@ export class UserService {
         id,
       },
     });
-    if (!findUser) throw new NotFoundException(' user not found ');
+    if (!findUser) throw new NotFoundException('usuario no encontrado');
     return findUser;
   }
   public async findAllUsers(option: IOptionUserInterface): Promise<User[]> {
@@ -41,6 +41,12 @@ export class UserService {
     });
     return findAll;
   }
+  public async countUsers(option: IOptionUserInterface): Promise<number> {
+    const findAll = await this.prismaService.user.count({
+      where: option.where,
+    });
+    return findAll;
+  }
   public async findUser({ where }: IOptionUserInterface): Promise<User | null> {
     const findUser = await this.prismaService.user.findFirst({
       where,
@@ -48,20 +54,20 @@ export class UserService {
     return findUser;
   }
   public async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const findUser = this.findUser({
+    const findUser = await this.findUser({
       where: {
-        telephono: createUserDto.telephono,
+        telephone: createUserDto.telephone,
       },
     });
     if (findUser)
       throw new BadRequestException(
         'Cambien de nro de telefono, ya se encuentra ocupado',
       );
-    const createUser = this.prismaService.user.create({
+    const createUser = await this.prismaService.user.create({
       data: {
         ...createUserDto,
         code: this.generatorCode(),
-        password: this.hashPassword(createUserDto.telephono, 10),
+        password: this.hashPassword(createUserDto.telephone, 10),
       },
     });
     return createUser;
@@ -69,5 +75,18 @@ export class UserService {
   public hashPassword(password: string, salt: number): string {
     const saltHash = bcrypt.genSaltSync(salt);
     return bcrypt.hashSync(password, saltHash);
+  }
+  public async recoverPassword(id: string): Promise<User> {
+    const findUser = await this.findUserId(id);
+
+    const updateUser = await this.prismaService.user.update({
+      where: {
+        id,
+      },
+      data: {
+        password: this.hashPassword(findUser.telephone, 10),
+      },
+    });
+    return updateUser;
   }
 }

@@ -10,7 +10,7 @@ const main = async (): Promise<void> => {
         password: bcrypt.hashSync('1234567', bcrypt.genSaltSync(10)),
         username: 'admin',
         sexo: 'M',
-        telephono: '76679596',
+        telephone: '76679596',
         role: {
           create: {
             name: 'admin',
@@ -39,6 +39,9 @@ const main = async (): Promise<void> => {
         },
         {
           name: 'editar usuarios y roles',
+        },
+        {
+          name: 'recuperar password',
         },
       ],
     });

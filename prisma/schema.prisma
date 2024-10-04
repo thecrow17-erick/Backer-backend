@@ -19,7 +19,7 @@ model User{
   username    String    @db.VarChar(50)
   password    String    @db.Text
   sexo        Sexo
-  telephono   String    @db.VarChar(8)
+  telephone   String    @db.VarChar(8)
 
   status      Boolean   @default(true)
 

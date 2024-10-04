@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Observable } from 'rxjs';
 import { UserService } from 'src/users/service';
 import { AuthService } from '../services/auth.service';
 

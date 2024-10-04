@@ -16,7 +16,7 @@ export class CreateUserDto {
   sexo: $Enums.Sexo;
 
   @IsPhoneNumber('BO')
-  telephono: string;
+  telephone: string;
 
   @IsNumber()
   roleId: number;

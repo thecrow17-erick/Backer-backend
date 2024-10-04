@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+
 export interface ISignJwt {
   payload: jwt.JwtPayload;
   expires: number | string;

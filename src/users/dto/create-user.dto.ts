@@ -4,7 +4,6 @@ import {
   IsNumber,
   IsPhoneNumber,
   IsString,
-  MaxLength,
   MinLength,
 } from 'class-validator';
 
@@ -15,10 +14,6 @@ export class CreateUserDto {
 
   @IsEnum($Enums.Sexo, { message: 'El sexo debe ser M o F' })
   sexo: $Enums.Sexo;
-
-  @IsString()
-  @MaxLength(255)
-  password: string;
 
   @IsPhoneNumber('BO')
   telephono: string;

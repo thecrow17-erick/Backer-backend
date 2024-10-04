@@ -55,14 +55,13 @@ export class UserService {
     });
     if (findUser)
       throw new BadRequestException(
-        `Cambien de nro de telefono, 
-        ya se encuentra ocupado`,
+        'Cambien de nro de telefono, ya se encuentra ocupado',
       );
     const createUser = this.prismaService.user.create({
       data: {
         ...createUserDto,
         code: this.generatorCode(),
-        password: this.hashPassword(createUserDto.password, 10),
+        password: this.hashPassword(createUserDto.telephono, 10),
       },
     });
     return createUser;

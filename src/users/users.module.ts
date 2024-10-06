@@ -1,11 +1,8 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { UserService } from './service/user.service';
+import { UserService, RoleService, PermissionService } from './service';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { RoleService } from './service/role.service';
-import { PermissionService } from './service/permission.service';
-import { RoleController } from './controllers/role.controller';
+import { RoleController, UserController } from './controllers';
 import { AuthModule } from 'src/auth/auth.module';
-import { UserController } from './controllers/user.controller';
 
 @Module({
   providers: [UserService, RoleService, PermissionService],

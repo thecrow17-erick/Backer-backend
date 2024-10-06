@@ -4,6 +4,10 @@ export interface IResponsePermission {
   total: number;
   permissions: Permission[];
 }
+export interface IResponseAllRoles {
+  total: number;
+  roles: Role[];
+}
 
 export interface IResponseRole {
   role: Role;

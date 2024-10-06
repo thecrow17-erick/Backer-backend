@@ -108,4 +108,53 @@ export class RoleService {
     });
     return createRole;
   }
+  public async updateRole(
+    id: number,
+    createRoleDto: CreateRoleDto,
+  ): Promise<Role> {
+    const findRole = await this.findIdRole(id);
+    const findPermissions = await this.permissionService.findAllPermission({
+      where: {
+        OR: createRoleDto.permissions.map(p => ({
+          id: p,
+        })),
+      },
+    });
+    if (findPermissions.length !== createRoleDto.permissions.length)
+      throw new BadRequestException('Ingrese permisos validos');
+    await this.prismaService.role_Permission.deleteMany({
+      where: {
+        roleId: findRole.id,
+      },
+    });
+    const updateRole = await this.prismaService.role.update({
+      where: {
+        id: findRole.id,
+      },
+      data: {
+        name: createRoleDto.name,
+        description: createRoleDto.description,
+        permissions: {
+          createMany: {
+            data: createRoleDto.permissions.map(p => ({
+              permissionId: p,
+            })),
+          },
+        },
+      },
+    });
+    return updateRole;
+  }
+  public async deleteRole(id: number): Promise<Role> {
+    const findRole = await this.findIdRole(id);
+    const deleteRole = await this.prismaService.role.update({
+      where: {
+        id: findRole.id,
+      },
+      data: {
+        status: !findRole.status,
+      },
+    });
+    return deleteRole;
+  }
 }

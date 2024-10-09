@@ -115,7 +115,23 @@ export class RoleController {
       },
     };
   }
-
+  @Get('get-role/:id')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(RoleGuard)
+  @Permission('ver roles')
+  public async getRoleId(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<IApiResponse<IResponseRole>> {
+    const statusCode = HttpStatus.OK;
+    const findRole = await this.roleService.findIdRole(id);
+    return {
+      statusCode,
+      message: 'buscar rol',
+      data: {
+        role: findRole,
+      },
+    };
+  }
   @Post('create-role')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(RoleGuard)

@@ -26,7 +26,7 @@ export class RoleService {
       },
     });
     if (!findPermission) throw new BadRequestException('Permiso no existe');
-    const findRole = this.prismaService.role_Permission.findFirst({
+    const findRole = await this.prismaService.role_Permission.findFirst({
       where: {
         AND: [
           {
@@ -40,7 +40,7 @@ export class RoleService {
     });
     if (!findRole)
       throw new UnauthorizedException(
-        'El rol no tiene este permiso autorizado',
+        'El usuario no tiene este permiso autorizado',
       );
     return findRole;
   }
@@ -65,6 +65,26 @@ export class RoleService {
     const findRole = await this.prismaService.role.findUnique({
       where: {
         id,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        permissions: {
+          select: {
+            permission: {
+              select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                updatedAt: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!findRole) throw new NotFoundException('rol no encontrado');

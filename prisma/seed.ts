@@ -38,10 +38,25 @@ const main = async (): Promise<void> => {
           name: 'crear usuarios',
         },
         {
-          name: 'editar usuarios y roles',
+          name: 'editar usuarios',
         },
         {
           name: 'recuperar password',
+        },
+        {
+          name: 'ver usuarios',
+        },
+        {
+          name: 'ver categorias',
+        },
+        {
+          name: 'crear categorias',
+        },
+        {
+          name: 'editar categorias',
+        },
+        {
+          name: 'eliminar categorias',
         },
       ],
     });

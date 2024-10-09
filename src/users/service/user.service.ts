@@ -10,10 +10,14 @@ import { randomBytes } from 'crypto';
 import { PrismaService } from 'src/prisma/service';
 import { IOptionUserInterface } from '../interface';
 import { CreateUserDto } from '../dto';
+import { RoleService } from './role.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private roleService: RoleService,
+  ) {}
   public generatorCode(length: number = 10): string {
     return randomBytes(length)
       .toString('base64')
@@ -25,6 +29,40 @@ export class UserService {
     const findUser = await this.prismaService.user.findUnique({
       where: {
         id,
+      },
+      select: {
+        id: true,
+        code: true,
+        username: true,
+        telephone: true,
+        password: true,
+        sexo: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        roleId: true,
+        role: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true,
+            permissions: {
+              select: {
+                permission: {
+                  select: {
+                    id: true,
+                    name: true,
+                    createdAt: true,
+                    updatedAt: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     if (!findUser) throw new NotFoundException('usuario no encontrado');
@@ -63,9 +101,11 @@ export class UserService {
       throw new BadRequestException(
         'Cambien de nro de telefono, ya se encuentra ocupado',
       );
+    const findRole = await this.roleService.findIdRole(createUserDto.roleId);
     const createUser = await this.prismaService.user.create({
       data: {
         ...createUserDto,
+        roleId: findRole.id,
         code: this.generatorCode(),
         password: this.hashPassword(createUserDto.telephone, 10),
       },
@@ -88,5 +128,37 @@ export class UserService {
       },
     });
     return updateUser;
+  }
+  public async updateUser(
+    id: string,
+    createUserDto: CreateUserDto,
+  ): Promise<User> {
+    const findUser = await this.findUserId(id);
+    const findRole = await this.roleService.findIdRole(createUserDto.roleId);
+    const updateUser = await this.prismaService.user.update({
+      where: {
+        id: findUser.id,
+      },
+      data: {
+        code: this.generatorCode(),
+        roleId: findRole.id,
+        sexo: createUserDto.sexo,
+        telephone: createUserDto.telephone,
+        username: createUserDto.username,
+      },
+    });
+    return updateUser;
+  }
+  public async deleteUser(id: string): Promise<User> {
+    const findUser = await this.findUserId(id);
+    const deleteUsr = await this.prismaService.user.update({
+      where: {
+        id: findUser.id,
+      },
+      data: {
+        status: !findUser.status,
+      },
+    });
+    return deleteUsr;
   }
 }

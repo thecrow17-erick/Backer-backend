@@ -8,6 +8,10 @@ export interface IResponseAllRoles {
   total: number;
   roles: Role[];
 }
+export interface IResponseAllUsers {
+  total: number;
+  users: User[];
+}
 
 export interface IResponseRole {
   role: Role;
